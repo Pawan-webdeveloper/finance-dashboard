@@ -66,9 +66,9 @@ Swagger docs at `http://localhost:3000/api-docs`.
 
 | Name | Email | Role | Password |
 |---|---|---|---|
-| Admin User | admin@finance.dev | ADMIN | admin123 |
-| Alice Analyst | alice@finance.dev | ANALYST | analyst123 |
-| Victor Viewer | victor@finance.dev | VIEWER | viewer123 |
+| Admin User | admin@finance.dev | ADMIN | Admin123 |
+| Alice Analyst | alice@finance.dev | ANALYST | Analyst123 |
+| Victor Viewer | victor@finance.dev | VIEWER | Viewer123 |
 
 ## Environment Variables
 

@@ -5,7 +5,7 @@ import { env } from '../../config/env';
 import { ConflictError, UnauthorizedError, NotFoundError } from '../../utils/errors';
 
 export class AuthService {
-  async register(data: { name: string; email: string; password: string; role?: 'VIEWER' | 'ANALYST' | 'ADMIN' }) {
+  async register(data: { name: string; email: string; password: string }) {
     const existingUser = await prisma.user.findUnique({
       where: { email: data.email },
     });
@@ -21,7 +21,7 @@ export class AuthService {
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        role: data.role || 'VIEWER',
+        role: 'VIEWER',
       },
       select: {
         id: true,

@@ -28,9 +28,9 @@ async function main() {
   await prisma.user.deleteMany();
 
   // Create users
-  const adminPassword = await bcrypt.hash('admin123', 12);
-  const analystPassword = await bcrypt.hash('analyst123', 12);
-  const viewerPassword = await bcrypt.hash('viewer123', 12);
+  const adminPassword = await bcrypt.hash('Admin123', 12);
+  const analystPassword = await bcrypt.hash('Analyst123', 12);
+  const viewerPassword = await bcrypt.hash('Viewer123', 12);
 
   const admin = await prisma.user.create({
     data: {
@@ -63,9 +63,9 @@ async function main() {
   });
 
   console.log('✅ Users created:');
-  console.log(`   Admin: admin@finance.dev / admin123`);
-  console.log(`   Analyst: alice@finance.dev / analyst123`);
-  console.log(`   Viewer: victor@finance.dev / viewer123`);
+  console.log(`   Admin: admin@finance.dev / Admin123`);
+  console.log(`   Analyst: alice@finance.dev / Analyst123`);
+  console.log(`   Viewer: victor@finance.dev / Viewer123`);
 
   // Create ~50 sample financial records
   const users = [admin, analyst, viewer];

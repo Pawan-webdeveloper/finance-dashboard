@@ -12,7 +12,7 @@ describe('Auth Module', () => {
         .send({
           name: 'Test User',
           email: 'test@example.com',
-          password: 'password123',
+          password: 'Password123',
         });
 
       expect(res.status).toBe(201);
@@ -29,7 +29,7 @@ describe('Auth Module', () => {
         .send({
           name: 'Duplicate User',
           email: 'duplicate@example.com',
-          password: 'password123',
+          password: 'Password123',
         });
 
       // Second register with same email
@@ -38,7 +38,7 @@ describe('Auth Module', () => {
         .send({
           name: 'Duplicate User 2',
           email: 'duplicate@example.com',
-          password: 'password456',
+          password: 'Password456',
         });
 
       expect(res.status).toBe(409);
@@ -51,7 +51,7 @@ describe('Auth Module', () => {
         .send({
           name: 'Bad Email User',
           email: 'notanemail',
-          password: 'password123',
+          password: 'Password123',
         });
 
       expect(res.status).toBe(400);
@@ -64,7 +64,33 @@ describe('Auth Module', () => {
         .send({
           name: 'Short Password User',
           email: 'short@example.com',
-          password: '123',
+          password: 'Pass123',
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+
+    it('should reject password without uppercase', async () => {
+      const res = await request(app)
+        .post('/api/auth/register')
+        .send({
+          name: 'No Uppercase User',
+          email: 'noupper@example.com',
+          password: 'password123',
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+
+    it('should reject password without number', async () => {
+      const res = await request(app)
+        .post('/api/auth/register')
+        .send({
+          name: 'No Number User',
+          email: 'nonumber@example.com',
+          password: 'Passwordab',
         });
 
       expect(res.status).toBe(400);
@@ -80,7 +106,7 @@ describe('Auth Module', () => {
         .send({
           name: 'Login Test',
           email: 'login@example.com',
-          password: 'password123',
+          password: 'Password123',
           role: 'ADMIN',
         });
     });
@@ -90,7 +116,7 @@ describe('Auth Module', () => {
         .post('/api/auth/login')
         .send({
           email: 'login@example.com',
-          password: 'password123',
+          password: 'Password123',
         });
 
       expect(res.status).toBe(200);
@@ -106,7 +132,7 @@ describe('Auth Module', () => {
         .post('/api/auth/login')
         .send({
           email: 'login@example.com',
-          password: 'wrongpassword',
+          password: 'WrongPassword',
         });
 
       expect(res.status).toBe(401);
@@ -118,7 +144,7 @@ describe('Auth Module', () => {
         .post('/api/auth/login')
         .send({
           email: 'nobody@example.com',
-          password: 'password123',
+          password: 'Password123',
         });
 
       expect(res.status).toBe(401);

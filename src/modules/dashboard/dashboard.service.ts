@@ -109,23 +109,33 @@ export class DashboardService {
       if (dateRange.to) where.date.lte = dateRange.to;
     }
 
-    const records = await prisma.financialRecord.findMany({
-      where,
-      select: { amount: true, type: true, date: true },
-      orderBy: { date: 'asc' },
-    });
+    const periodField = granularity === 'monthly'
+      ? Prisma.sql`DATE_TRUNC('month', date)`
+      : Prisma.sql`DATE_TRUNC('week', date)`;
 
-    // Group by time period
+    const results = await prisma.$queryRaw<Array<{
+      period: Date;
+      type: string;
+      total: number;
+    }>>`
+      SELECT ${periodField} as period, type, SUM(amount) as total
+      FROM financial_records
+      WHERE isDeleted = false
+        ${dateRange.from ? Prisma.sql`AND date >= ${dateRange.from}` : Prisma.empty}
+        ${dateRange.to ? Prisma.sql`AND date <= ${dateRange.to}` : Prisma.empty}
+      GROUP BY ${periodField}, type
+      ORDER BY period ASC
+    `;
+
     const periodMap: Record<string, { income: number; expense: number; net: number }> = {};
 
-    for (const record of records) {
-      const date = new Date(record.date);
+    for (const row of results) {
+      const date = new Date(row.period);
       let key: string;
 
       if (granularity === 'monthly') {
         key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       } else {
-        // Weekly: use ISO week
         const startOfYear = new Date(date.getFullYear(), 0, 1);
         const weekNum = Math.ceil((((date.getTime() - startOfYear.getTime()) / 86400000) + startOfYear.getDay() + 1) / 7);
         key = `${date.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
@@ -135,8 +145,8 @@ export class DashboardService {
         periodMap[key] = { income: 0, expense: 0, net: 0 };
       }
 
-      const amount = Number(record.amount);
-      if (record.type === 'INCOME') {
+      const amount = Number(row.total);
+      if (row.type === 'INCOME') {
         periodMap[key].income += amount;
       } else {
         periodMap[key].expense += amount;

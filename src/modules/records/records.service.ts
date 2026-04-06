@@ -3,6 +3,7 @@ import prisma from '../../config/prisma';
 import { NotFoundError } from '../../utils/errors';
 import { getPaginationOffset } from '../../utils/pagination';
 import { parseDateRange } from '../../utils/date';
+import { sanitizeInput } from '../../utils/sanitize';
 
 interface ListRecordsParams {
   page: number;
@@ -92,9 +93,9 @@ export class RecordsService {
         userId,
         amount: new Prisma.Decimal(data.amount),
         type: data.type,
-        category: data.category,
+        category: sanitizeInput(data.category),
         date: new Date(data.date),
-        notes: data.notes,
+        notes: data.notes ? sanitizeInput(data.notes) : undefined,
       },
       include: {
         user: {
@@ -127,6 +128,12 @@ export class RecordsService {
     }
     if (data.date) {
       updateData.date = new Date(data.date);
+    }
+    if (data.category) {
+      updateData.category = sanitizeInput(data.category);
+    }
+    if (data.notes !== undefined) {
+      updateData.notes = data.notes ? sanitizeInput(data.notes) : undefined;
     }
 
     const updated = await prisma.financialRecord.update({
