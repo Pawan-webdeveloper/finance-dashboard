@@ -22,15 +22,7 @@ A RESTful backend API for a finance dashboard system supporting role-based acces
 - Node.js 18+
 - PostgreSQL 14+ (or Docker)
 
-### Option 1: Docker (Recommended)
-
-```bash
-docker-compose up -d
-npx prisma migrate dev --name init
-npm run seed
-```
-
-### Option 2: Local Setup
+### Local Setup
 
 1. **Clone & install dependencies**
    ```bash
@@ -69,16 +61,6 @@ Swagger docs at `http://localhost:3000/api-docs`.
 | Admin User | admin@finance.dev | ADMIN | Admin123 |
 | Alice Analyst | alice@finance.dev | ANALYST | Analyst123 |
 | Victor Viewer | victor@finance.dev | VIEWER | Viewer123 |
-
-## Environment Variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `DATABASE_URL` | PostgreSQL connection string | — |
-| `JWT_SECRET` | Secret key for JWT signing | — |
-| `JWT_EXPIRES_IN` | Token expiry duration | `24h` |
-| `PORT` | Server port | `3000` |
-| `NODE_ENV` | Environment mode | `development` |
 
 ## API Endpoints
 
